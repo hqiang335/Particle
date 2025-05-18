@@ -1,0 +1,205 @@
+:root {
+    --primary-color: #4CAF50;
+    --background-color: #1a1a1a;
+    --sidebar-color: #242424;
+    --text-color: #ffffff;
+    --text-secondary: #a0a0a0;
+    --border-radius: 8px;
+    --transition-speed: 0.3s;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: var(--background-color);
+    font-family: 'Noto Sans SC', Arial, sans-serif;
+    color: var(--text-color);
+}
+
+.app-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 320px;
+    background: var(--sidebar-color);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.sidebar-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.description {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--background-color);
+    position: relative;
+}
+
+#canvas-container {
+    position: relative;
+}
+
+canvas {
+    display: block;
+    border-radius: var(--border-radius);
+}
+
+.control-panel {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.control-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.control-panel::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.control-panel::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.control-group {
+    margin-bottom: 24px;
+}
+
+.control-group-title {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* 滑块样式 */
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    outline: none;
+    margin: 10px 0;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+    transition: transform var(--transition-speed);
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+}
+
+input[type=range]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+/* 按钮样式 */
+button {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+button:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+/* 下拉菜单样式 */
+select {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: background-color var(--transition-speed);
+}
+
+select:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* 标签样式 */
+label, p {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+.value-display {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: right;
+    margin-top: 4px;
+}
+
+#canvas-container {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.controls {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.slider-container {
+    margin-top: 15px;
+}
+
+label {
+    margin-right: 10px;
+} 
