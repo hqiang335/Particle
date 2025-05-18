@@ -101,20 +101,18 @@ class Settings {
         const buttonGroup = createDiv();
         buttonGroup.parent(controlPanel);
         buttonGroup.class('control-group');
-        createP('控制').parent(buttonGroup).class('control-group-title');
-
+        createP('Controls').parent(buttonGroup).class('control-group-title');
 
         // 创建按钮
-        this.controls.pauseButton = createButton('暂停/继续');
-        this.controls.resetButton = createButton('重置');
-        this.controls.boundaryButton = createButton('切换边界模式');
-        this.controls.matrixButton = createButton('显示/隐藏矩阵');
-        this.controls.reinitButton = createButton('重新初始化粒子');
-        this.controls.audioToggle = createButton('麦克风状态：开启');
-        this.controls.interactionModeButton = createButton('抓取模式: 鼠标');
+        this.controls.pauseButton = createButton('Pause/Resume');
+        this.controls.resetButton = createButton('Reset');
+        this.controls.boundaryButton = createButton('Toggle Boundary Mode');
+        this.controls.matrixButton = createButton('Show/Hide Matrix');
+        this.controls.reinitButton = createButton('Reinitialize Particles');
+        this.controls.audioToggle = createButton('Microphone: On');
+        this.controls.interactionModeButton = createButton('Grab Mode: Mouse');
         this.controls.audioToggle.parent(buttonGroup);
         
-
         // 将按钮添加到按钮组
         this.controls.pauseButton.parent(buttonGroup);
         this.controls.resetButton.parent(buttonGroup);
@@ -132,7 +130,7 @@ class Settings {
         this.controls.reinitButton.mousePressed(() => resetSimulation());
         this.controls.audioToggle.mousePressed(() => {
             this.audio.enabled = !this.audio.enabled;
-            this.controls.audioToggle.html(this.audio.enabled ? '麦克风状态：开启' : '麦克风状态：关闭');
+            this.controls.audioToggle.html(this.audio.enabled ? 'Microphone: On' : 'Microphone: Off');
             // 如果关闭音频，重置音频相关参数
             if (!this.audio.enabled) {
                 this.audio.level = 0;
@@ -147,12 +145,12 @@ class Settings {
         const presetGroup = createDiv();
         presetGroup.parent(controlPanel);
         presetGroup.class('control-group');
-        createP('预设与显示').parent(presetGroup).class('control-group-title');
+        createP('Presets & Display').parent(presetGroup).class('control-group-title');
 
         // 颜色方案选择器
         const colorSchemeContainer = createDiv();
         colorSchemeContainer.parent(presetGroup);
-        createP('颜色方案').parent(colorSchemeContainer);
+        createP('Color Scheme').parent(colorSchemeContainer);
         this.controls.colorScheme = createSelect();
         this.controls.colorScheme.parent(colorSchemeContainer);
         
@@ -169,7 +167,7 @@ class Settings {
         // 初始化模式选择器
         const initModeContainer = createDiv();
         initModeContainer.parent(presetGroup);
-        createP('初始化模式').parent(initModeContainer);
+        createP('Initialization Mode').parent(initModeContainer);
         this.controls.initMode = createSelect();
         this.controls.initMode.parent(initModeContainer);
         
@@ -199,7 +197,7 @@ class Settings {
         // 渲染模式选择器
         const renderModeContainer = createDiv();
         renderModeContainer.parent(presetGroup);
-        createP('粒子渲染模式').parent(renderModeContainer);
+        createP('Particle Render Mode').parent(renderModeContainer);
         this.controls.renderMode = createSelect();
         this.controls.renderMode.parent(renderModeContainer);
         
@@ -224,7 +222,7 @@ class Settings {
         // 矩阵预设选择器
         const matrixPresetContainer = createDiv();
         matrixPresetContainer.parent(presetGroup);
-        createP('矩阵预设').parent(matrixPresetContainer);
+        createP('Matrix Preset').parent(matrixPresetContainer);
         this.controls.matrixPreset = createSelect();
         this.controls.matrixPreset.parent(matrixPresetContainer);
         ['random', 'symmetry', 'chains', 'snakes', 'clusters', 'zero', 'one', 'minusone'].forEach(preset => {
@@ -236,27 +234,27 @@ class Settings {
         const basicGroup = createDiv();
         basicGroup.parent(controlPanel);
         basicGroup.class('control-group');
-        createP('基本参数').parent(basicGroup).class('control-group-title');
+        createP('Basic Parameters').parent(basicGroup).class('control-group-title');
 
         // 添加滑块控件
         Object.assign(this.controls, {
-            particleCount: this.createSliderWithLabel(basicGroup, '每类粒子数量', 20, 500, this.particleCount, 20),
-            speciesCount: this.createSliderWithLabel(basicGroup, '颜色数量', 1, 8, this.speciesCount, 1),
-            particleRadius: this.createSliderWithLabel(basicGroup, '粒子半径', 0.1, 15, this.physics.particleRadius, 0.1),
+            particleCount: this.createSliderWithLabel(basicGroup, 'Particles per Species', 20, 500, this.particleCount, 20),
+            speciesCount: this.createSliderWithLabel(basicGroup, 'Species Count', 1, 8, this.speciesCount, 1),
+            particleRadius: this.createSliderWithLabel(basicGroup, 'Particle Radius', 0.1, 15, this.physics.particleRadius, 0.1),
             
             // 物理参数控制组
-            friction: this.createSliderWithLabel(basicGroup, '摩擦力', 0, 1, this.physics.friction, 0.1),
+            friction: this.createSliderWithLabel(basicGroup, 'Friction', 0, 1, this.physics.friction, 0.1),
             //maxSpeed: this.createSliderWithLabel(basicGroup, '最大速度', 1, 5, this.physics.maxSpeed, 0.5),
             // maxForce: this.createSliderWithLabel(basicGroup, '最大力', 0.1, 10, this.physics.maxForce, 0.1),
-            perceptionRadius: this.createSliderWithLabel(basicGroup, '感知半径', 10, 100, this.physics.perceptionRadius, 1),
-            collisionForce: this.createSliderWithLabel(basicGroup, '碰撞力', 0, 10, this.physics.collisionForce, 0.1),
-            dragRadius: this.createSliderWithLabel(basicGroup, '拖动范围', 20, 100, this.interaction.dragRadius, 5),
-            trailStrength: this.createSliderWithLabel(basicGroup, '粒子拖尾强度', 0, 8, this.effects.trailStrength, 0.5),
+            perceptionRadius: this.createSliderWithLabel(basicGroup, 'Perception Radius', 10, 100, this.physics.perceptionRadius, 1),
+            collisionForce: this.createSliderWithLabel(basicGroup, 'Collision Force', 0, 10, this.physics.collisionForce, 0.1),
+            dragRadius: this.createSliderWithLabel(basicGroup, 'Drag Radius', 20, 100, this.interaction.dragRadius, 5),
+            trailStrength: this.createSliderWithLabel(basicGroup, 'Trail Strength', 0, 8, this.effects.trailStrength, 0.5),
             
             // 光晕效果控制组
-            haloEnabled: this.createCheckboxWithLabel(basicGroup, '启用光晕效果', this.effects.haloEnabled),
-            haloAlpha: this.createSliderWithLabel(basicGroup, '光晕透明度', 0.01, 0.5, this.effects.haloAlpha, 0.01),
-            haloSizeMultiplier: this.createSliderWithLabel(basicGroup, '光晕大小', 1, 6, this.effects.haloSizeMultiplier, 0.1),
+            haloEnabled: this.createCheckboxWithLabel(basicGroup, 'Enable Halo Effect', this.effects.haloEnabled),
+            haloAlpha: this.createSliderWithLabel(basicGroup, 'Halo Alpha', 0.01, 0.5, this.effects.haloAlpha, 0.01),
+            haloSizeMultiplier: this.createSliderWithLabel(basicGroup, 'Halo Size Multiplier', 1, 6, this.effects.haloSizeMultiplier, 0.1),
             
         });
     }
@@ -303,19 +301,19 @@ class Settings {
      */
     createLabelElements() {
         // 创建颜色方案和矩阵预设标签
-        this.labelElements.colorScheme = createP('颜色方案');
-        this.labelElements.matrixPreset = createP('矩阵预设');
+        this.labelElements.colorScheme = createP('Color Scheme');
+        this.labelElements.matrixPreset = createP('Matrix Preset');
         
         // 创建滑块标签
         const sliderLabels = {
-            particleCount: '每类粒子数量',
-            friction: '摩擦力',
+            particleCount: 'Particles per Species',
+            friction: 'Friction',
             //maxSpeed: '最大速度',
             // maxForce: '最大力',
-            perceptionRadius: '感知半径',
-            collisionForce: '碰撞力',
-            speciesCount:'颜色数量',
-            particleRadius:'粒子半径'
+            perceptionRadius: 'Perception Radius',
+            collisionForce: 'Collision Force',
+            speciesCount:'Species Count',
+            particleRadius:'Particle Radius'
         };
         
         Object.entries(sliderLabels).forEach(([key, label]) => {
@@ -323,11 +321,11 @@ class Settings {
             this.styleLabelElement(this.labelElements[key]);
         });
         // 添加拖动范围标签
-        this.labelElements.dragRadius = createP('拖动范围');
+        this.labelElements.dragRadius = createP('Drag Radius');
         this.styleLabelElement(this.labelElements.dragRadius);
       
         // 在createLabelElements中添加标签
-        this.labelElements.trailStrength = createP('粒子拖尾强度');
+        this.labelElements.trailStrength = createP('Trail Strength');
         this.styleLabelElement(this.labelElements.trailStrength);
         
         // 给所有标签应用样式
@@ -403,6 +401,6 @@ class Settings {
 
     toggleInteractionMode() {
         this.interaction.mode = this.interaction.mode === 'mouse' ? 'hand' : 'mouse';
-        this.controls.interactionModeButton.html('抓取模式: ' + (this.interaction.mode === 'mouse' ? '鼠标' : '手势'));
+        this.controls.interactionModeButton.html('Grab Mode: ' + (this.interaction.mode === 'mouse' ? 'Mouse' : 'Hand'));
     }
 } 
