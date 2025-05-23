@@ -68,6 +68,7 @@ function setup() {
     canvasElement.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
     canvasElement.style.borderRadius = '12px';
     mouseOffset = createVector(0, 0);
+
     // Audio input and FFT
     try {
         mic = new p5.AudioIn();
@@ -82,15 +83,18 @@ function setup() {
     } catch (e) {
         console.error('Audio input creation failed:', e);
     }
+    
     matrix = new Matrix(settings.speciesCount);
     interactionMatrix = new Matrix(settings.controls.speciesCount.value());
     interactionMatrix.print();
     quadtreeManager = new QuadTreeManager(width, height, 4);
     resetSimulation();
+
     video = createCapture(VIDEO);
     video.size(width, height);
     video.hide();
     handpose.detectStart(video, gotHands);
+
     let fileInput = createFileInput(handleFile);
     fileInput.position(10, 10);
     // Music UI event binding
@@ -126,7 +130,7 @@ function draw() {
             audioLevel = smoothedAudioLevel;
             if (useMic) {
                 sizeFactor = map(audioLevel, 0, 1, 1, 20);
-                audioForceMultiplier = map(audioLevel, 0, 1, 1.0, 10.0);
+                audioForceMultiplier = map(audioLevel, 0, 1, 1.0, 20.0);
             } else {
                 // Piecewise mapping for music mode: smooth transition, avoid abrupt change
                 sizeFactor = piecewiseMap(audioLevel, 0.5, 1, 1, 5, 1);

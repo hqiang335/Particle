@@ -80,7 +80,7 @@ class Settings {
         
         // Audio control
         this.audio = {
-            enabled: true,        // Enable audio
+            enabled: false,        // Enable audio (default off)
             level: 0,             // Current audio level
             smoothedLevel: 0,     // Smoothed audio level
             sizeFactor: 1.0,      // Particle size factor
@@ -106,7 +106,7 @@ class Settings {
         this.controls.boundaryButton = createButton('Boundary Mode: Wrap');
         this.controls.matrixButton = createButton('Show Matrix');
         this.controls.reinitButton = createButton('Reinitialize Particles');
-        this.controls.audioToggle = createButton('Sound Interaction: On');
+        this.controls.audioToggle = createButton('Sound Interaction: Off');
         this.controls.interactionModeButton = createButton('Grab Mode: Mouse');
         this.controls.audioToggle.parent(buttonGroup);
         this.controls.pauseButton.parent(buttonGroup);
@@ -192,7 +192,14 @@ class Settings {
             this.audio.enabled = !this.audio.enabled;
             this.controls.audioToggle.html(this.audio.enabled ? 'Sound Interaction: On' : 'Sound Interaction: Off');
             // Reset audio parameters if disabled
-            if (!this.audio.enabled) {
+            if (this.audio.enabled) {
+                if (typeof mic !== 'undefined' && mic && !mic.enabled) {
+                    mic.start(() => {
+                        if (typeof fft !== 'undefined' && fft) fft.setInput(mic);
+                        audioInitialized = true;
+                    });
+                }
+            } else {
                 this.audio.level = 0;
                 this.audio.smoothedLevel = 0;
                 this.audio.sizeFactor = 1.0;
