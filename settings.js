@@ -16,7 +16,7 @@ class Settings {
         this.matrixX = 40;         // Matrix X position
         this.matrixY = 40;         // Matrix Y position
         this.isPaused = false;     // Pause state
-        this.showMatrix = false;   // Show matrix or not
+        this.showMatrix = true;   // Show matrix or not
         this.boundaryMode = 'wrap'; // Boundary mode: 'wrap' or 'bounce'
         this.transparency= 150;
         // 创建颜色管理器实例
