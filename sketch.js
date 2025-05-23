@@ -35,7 +35,7 @@ let handUpdateInterval = 1000 / 30; // Limit hand update to 30fps
 // Audio analysis
 let mic, fft, audioInitialized = false;
 let musicFile, musicSound;
-let useMic = true;
+let useMic = false; // 默认音乐模式为on
 let frequencyBands = 32;
 let audioLevel = 0;
 let musicLevelMin = 1, musicLevelMax = 0;
@@ -73,13 +73,7 @@ function setup() {
     try {
         mic = new p5.AudioIn();
         mic.amp(1.0);
-        mic.start(function() {
-            fft = new p5.FFT(0.8, frequencyBands);
-            fft.setInput(mic);
-            audioInitialized = true;
-        }, function(err) {
-            console.error('Microphone start failed:', err);
-        });
+        // 不自动start
     } catch (e) {
         console.error('Audio input creation failed:', e);
     }
@@ -111,6 +105,17 @@ function setup() {
             settings.controls.musicModeButton.html('Music Mode: On');
         }
     };
+    // 默认自动进入音乐模式
+    setTimeout(() => {
+        if (musicSound && !musicSound.isPlaying()) {
+            musicSound.play();
+            if (!fft) fft = new p5.FFT(0.8, frequencyBands);
+            fft.setInput(musicSound);
+            if (settings.controls.musicModeButton) {
+                settings.controls.musicModeButton.html('Music Mode: On');
+            }
+        }
+    }, 500);
 }
 
 function draw() {
