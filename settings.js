@@ -116,6 +116,63 @@ class Settings {
         this.controls.reinitButton.parent(buttonGroup);
         this.controls.audioToggle.parent(buttonGroup);
         this.controls.interactionModeButton.parent(buttonGroup);
+        // Grab Mode help button (question mark, circular)
+        const grabHelpButton = createButton('?');
+        grabHelpButton.parent(buttonGroup);
+        grabHelpButton.style('width', '22px');
+        grabHelpButton.style('height', '22px');
+        grabHelpButton.style('border-radius', '50%'); // Make the button circular
+        grabHelpButton.style('background', '#444');
+        grabHelpButton.style('color', '#fff');
+        grabHelpButton.style('font-weight', 'bold');
+        grabHelpButton.style('border', 'none');
+        grabHelpButton.style('cursor', 'pointer');
+        grabHelpButton.style('margin-left', '2px');
+        grabHelpButton.attribute('title', 'Grab Mode Help');
+        // Custom popover for Grab Mode help
+        let grabHelpPopover = null;
+        grabHelpButton.mousePressed(() => {
+            if (grabHelpPopover && grabHelpPopover.elt.style.display !== 'none') {
+                grabHelpPopover.hide();
+                return;
+            }
+            if (!grabHelpPopover) {
+                grabHelpPopover = createDiv();
+                grabHelpPopover.parent(document.body);
+                grabHelpPopover.style('position', 'absolute');
+                grabHelpPopover.style('z-index', '9999');
+                grabHelpPopover.style('background', '#222');
+                grabHelpPopover.style('color', '#fff');
+                grabHelpPopover.style('padding', '14px 18px');
+                grabHelpPopover.style('border-radius', '8px');
+                grabHelpPopover.style('box-shadow', '0 2px 12px rgba(0,0,0,0.25)');
+                grabHelpPopover.style('font-size', '15px');
+                grabHelpPopover.style('max-width', '340px');
+                grabHelpPopover.style('line-height', '1.6');
+                grabHelpPopover.html(
+`<b>Grab Mode Usage Guide</b><br><br>
+<ul style='padding-left:18px;margin:0;'>
+<li><b>Grab Mode: Mouse</b> — Drag particles using the mouse.</li>
+<li><b>Grab Mode: Hand</b> — Use your web camera to track the center of your hand. You can push particles within the drag radius using your hand.</li>
+</ul>
+<div style='margin-top:8px;'>The <b>drag radius</b> can be adjusted in the "Basic Parameters" section below.</div>`);
+                grabHelpPopover.hide();
+            }
+            // Position the popover above the help button
+            const rect = grabHelpButton.elt.getBoundingClientRect();
+            grabHelpPopover.position(rect.left + window.scrollX - grabHelpPopover.elt.offsetWidth/2 + rect.width/2, rect.top + window.scrollY - grabHelpPopover.elt.offsetHeight - 12);
+            grabHelpPopover.show();
+            // Hide popover when clicking elsewhere
+            const hidePopover = (e) => {
+                if (!grabHelpPopover.elt.contains(e.target) && e.target !== grabHelpButton.elt) {
+                    grabHelpPopover.hide();
+                    document.removeEventListener('mousedown', hidePopover);
+                }
+            };
+            setTimeout(() => {
+                document.addEventListener('mousedown', hidePopover);
+            }, 0);
+        });
         // Button events
         this.controls.pauseButton.mousePressed(() => {
             this.isPaused = !this.isPaused;
@@ -147,7 +204,72 @@ class Settings {
         const soundGroup = createDiv();
         soundGroup.parent(controlPanel);
         soundGroup.class('control-group');
-        createP('Sound Interaction').parent(soundGroup).class('control-group-title');
+        const soundTitleRow = createDiv();
+        soundTitleRow.parent(soundGroup);
+        soundTitleRow.style('display', 'flex');
+        soundTitleRow.style('align-items', 'center');
+        const soundTitle = createP('Sound Interaction');
+        soundTitle.parent(soundTitleRow);
+        soundTitle.style('margin', '0 8px 0 0');
+        // Help button (question mark, circular)
+        const helpButton = createButton('?');
+        helpButton.parent(soundTitleRow);
+        helpButton.style('width', '22px');
+        helpButton.style('height', '22px');
+        helpButton.style('border-radius', '50%'); // Make the button circular
+        helpButton.style('background', '#444');
+        helpButton.style('color', '#fff');
+        helpButton.style('font-weight', 'bold');
+        helpButton.style('border', 'none');
+        helpButton.style('cursor', 'pointer');
+        helpButton.style('margin-left', '2px');
+        helpButton.attribute('title', 'Sound Interaction Help');
+        // Custom popover for help
+        let helpPopover = null;
+        helpButton.mousePressed(() => {
+            if (helpPopover && helpPopover.elt.style.display !== 'none') {
+                helpPopover.hide();
+                return;
+            }
+            if (!helpPopover) {
+                helpPopover = createDiv();
+                helpPopover.parent(document.body);
+                helpPopover.style('position', 'absolute');
+                helpPopover.style('z-index', '9999');
+                helpPopover.style('background', '#222');
+                helpPopover.style('color', '#fff');
+                helpPopover.style('padding', '14px 18px');
+                helpPopover.style('border-radius', '8px');
+                helpPopover.style('box-shadow', '0 2px 12px rgba(0,0,0,0.25)');
+                helpPopover.style('font-size', '15px');
+                helpPopover.style('max-width', '320px');
+                helpPopover.style('line-height', '1.6');
+                helpPopover.html(
+`<b>Sound Interaction Usage Guide</b><br><br>
+<ul style='padding-left:18px;margin:0;'>
+<li><b>Sound Interaction Off</b> + <b>Music Mode Off</b>: No sound interaction, no music.</li>
+<li><b>Sound Interaction Off</b> + <b>Music Mode On</b>: No sound interaction, music plays.</li>
+<li><b>Sound Interaction On</b> + <b>Music Mode Off</b>: Sound interaction via microphone, no music.</li>
+<li><b>Sound Interaction On</b> + <b>Music Mode On</b>: Interact with music, music plays.</li>
+</ul>
+<div style='margin-top:8px;'><b>Music:</b> Subwoofer Lullaby</div>`);
+                helpPopover.hide();
+            }
+            // Position the popover above the help button
+            const rect = helpButton.elt.getBoundingClientRect();
+            helpPopover.position(rect.left + window.scrollX - helpPopover.elt.offsetWidth/2 + rect.width/2, rect.top + window.scrollY - helpPopover.elt.offsetHeight - 12);
+            helpPopover.show();
+            // Hide popover when clicking elsewhere
+            const hidePopover = (e) => {
+                if (!helpPopover.elt.contains(e.target) && e.target !== helpButton.elt) {
+                    helpPopover.hide();
+                    document.removeEventListener('mousedown', hidePopover);
+                }
+            };
+            setTimeout(() => {
+                document.addEventListener('mousedown', hidePopover);
+            }, 0);
+        });
         this.controls.audioToggle.parent(soundGroup);
         this.controls.musicModeButton = createButton('Music Mode: Off');
         this.controls.musicModeButton.parent(soundGroup);
