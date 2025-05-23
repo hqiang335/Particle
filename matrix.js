@@ -1,11 +1,15 @@
+/*
+Matrix - Interaction matrix for controlling particle species interactions.
+Supports presets, resizing, and visualization.
+*/
 /**
  * 交互矩阵类，控制不同类型粒子间的相互作用
  */
 class Matrix {
     constructor(size) {
-        // 使用传入的size参数，而不是从settings中获取
+        // Use the provided size parameter
         this.size = size;
-        // 确保使用正确的大小初始化值数组
+        // Initialize value array
         this.values = Array(this.size).fill().map(() => Array(this.size).fill(0));
         this.presets = {
             random: () => this.initializeRandom(),
@@ -21,16 +25,16 @@ class Matrix {
         this.initializeRandom();
     }
 
-    // 基本矩阵操作
+    // Basic matrix operations
     get(i, j) {
-            return this.values[i][j];
+        return this.values[i][j];
     }
 
     set(i, j, value) {       
-            this.values[i][j] = Math.max(-1, Math.min(1, value));
+        this.values[i][j] = Math.max(-1, Math.min(1, value));
     }
 
-    // 预设模式初始化函数
+    // Preset initializations
     initializeRandom() {
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
@@ -41,7 +45,7 @@ class Matrix {
     }
 
     initializeSymmetry() {
-        // 生成对称矩阵
+        // Symmetric matrix
         for (let i = 0; i < this.size; i++) {
             for (let j = i; j < this.size; j++) {
                 let value = random(-1, 1);
@@ -52,7 +56,7 @@ class Matrix {
         this.currentPreset = 'symmetry';
     }
     
-    // 链式结构
+    // Chain structure
     initializeChains() {
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
@@ -66,33 +70,31 @@ class Matrix {
         this.currentPreset = 'chains';
     }
 
-    // 蛇形结构
+    // Snake structure
     initializeSnakes() {
-        //先全部初始化为0
-        this.initializeZero() 
-        // 然后设置自吸引和对下一类的吸引
+        this.initializeZero();
         for (let i = 0; i < this.size; i++) {
-            this.set(i, i, 1);  // 自吸引
-            this.set(i, (i + 1) % this.size, 0.3);  // 弱吸引下一类型
+            this.set(i, i, 1);  // Self-attraction
+            this.set(i, (i + 1) % this.size, 0.3);  // Weak attraction to next type
         }
         this.currentPreset = 'snakes';
     }
   
-    // 群集结构
+    // Cluster structure
     initializeClusters() {
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
                 if (i === j) {
-                    this.values[i][j] = 1;  // 同类强吸引
+                    this.values[i][j] = 1;  // Strong self-attraction
                 } else {
-                    this.values[i][j] = -0.5;  // 异类弱排斥
+                    this.values[i][j] = -0.5;  // Weak repulsion between types
                 }
             }
         }
         this.currentPreset = 'clusters';
     }
   
-    // 零矩阵
+    // Zero matrix
     initializeZero() {
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
@@ -102,7 +104,7 @@ class Matrix {
         this.currentPreset = 'zero';
     }
     
-    // 1矩阵
+    // All ones
     initializeOne() {
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
@@ -112,7 +114,7 @@ class Matrix {
         this.currentPreset = 'one';
     }
   
-    // -1矩阵
+    // All minus ones
     initializeMinusOne() {
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
@@ -122,26 +124,20 @@ class Matrix {
         this.currentPreset = 'minusone';
     }
 
-    // 应用预设
+    // Apply a preset
     applyPreset(presetName) {
         if (this.presets[presetName]) {
             this.presets[presetName]();
         }
     }
     
-    // 更新矩阵大小
+    // Update matrix size
     updateSize(newSize) {
         if (newSize === this.size) return;
-        
-        // 保存当前值
         const oldValues = this.values;
         const oldSize = this.size;
-        
-        // 更新大小
         this.size = newSize;
         this.values = Array(newSize).fill().map(() => Array(newSize).fill(0));
-        
-        // 复制旧值到新矩阵
         const minSize = Math.min(oldSize, newSize);
         for (let i = 0; i < minSize; i++) {
             for (let j = 0; j < minSize; j++) {
@@ -150,66 +146,42 @@ class Matrix {
         }
     }
 
-    // 绘制矩阵可视化
+    // Draw matrix visualization
     show(x, y, cellSize) {
         push();
         translate(x, y);
-        
-        // 确保使用HSB颜色模式
         colorMode(HSB, 360, 100, 100, 255);
-        
-        // 在矩阵上方和左侧显示粒子颜色条
-        // 上方颜色条
+        // Draw color bars above and to the left
         for (let j = 0; j < this.size; j++) {
-            // 获取对应颜色
             const speciesColor = settings.getSpeciesColor(j);
-            
-            // 绘制颜色块
             fill(speciesColor);
             noStroke();
             rect(j * cellSize, -cellSize * 0.8, cellSize, cellSize * 0.6);
-            
-            // 添加类型索引（白色文本）
             fill(0, 0, 100, 255);
             textAlign(CENTER, CENTER);
             textSize(cellSize * 0.3);
             text(j, j * cellSize + cellSize/2, -cellSize * 0.4);
         }
-        
-        // 左侧颜色条
         for (let i = 0; i < this.size; i++) {
-            // 获取对应颜色
             const speciesColor = settings.getSpeciesColor(i);
-            
-            // 绘制颜色块
             fill(speciesColor);
             noStroke();
             rect(-cellSize * 0.8, i * cellSize, cellSize * 0.6, cellSize);
-            
-            // 添加类型索引（白色文本）
             fill(0, 0, 100, 255);
             textAlign(CENTER, CENTER);
             textSize(cellSize * 0.3);
             text(i, -cellSize * 0.4, i * cellSize + cellSize/2);
         }
-        
-        // 绘制矩阵网格
+        // Draw matrix grid
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
                 const value = this.values[i][j];
-                
-                // 设置颜色：HSB模式
                 if (value > 0) {
-                    // 绿色色系（120色相）表示吸引
-                    fill(120, 80, value * 100, 255);
+                    fill(120, 80, value * 100, 255); // Green for attraction
                 } else {
-                    // 红色色系（0色相）表示排斥
-                    fill(0, 80, -value * 100, 255);
+                    fill(0, 80, -value * 100, 255); // Red for repulsion
                 }
-                
                 rect(j * cellSize, i * cellSize, cellSize, cellSize);
-                
-                // 添加数值标签（白色文本）
                 fill(0, 0, 100, 255);
                 noStroke();
                 textAlign(CENTER, CENTER);
@@ -217,20 +189,17 @@ class Matrix {
                 text(value.toFixed(1), j * cellSize + cellSize/2, i * cellSize + cellSize/2);
             }
         }
-
-        // 检查鼠标交互
+        // Mouse interaction
         if (mouseX > x && mouseX < x + this.size * cellSize &&
             mouseY > y && mouseY < y + this.size * cellSize) {
             const i = floor((mouseY - y) / cellSize);
             const j = floor((mouseX - x) / cellSize);
-            
-            // 高亮当前单元格（白色边框）
+            // Highlight current cell
             noFill();
             stroke(0, 0, 100, 255);
             strokeWeight(2);
             rect(j * cellSize, i * cellSize, cellSize, cellSize);
-            
-            // 处理点击
+            // Handle click
             if (mouseIsPressed) {
                 if (mouseButton === LEFT) {
                     this.values[i][j] = min(1, this.values[i][j] + 0.1);
@@ -239,11 +208,10 @@ class Matrix {
                 }
             }
         }
-        
         pop();
     }
 
-    // 打印矩阵（用于调试）
+    // Print matrix (for debugging)
     print() {
         console.log("Interaction Matrix:");
         for (let i = 0; i < this.size; i++) {

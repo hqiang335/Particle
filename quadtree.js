@@ -1,5 +1,9 @@
-// 四叉树空间分区系统
-// 基于点的四叉树实现，支持环绕边界
+/*
+QuadTree spatial partitioning for efficient neighbor search in particle systems.
+*/
+
+// QuadTree spatial partitioning system
+// Supports wrap-around boundaries and fast neighbor search
 
 class Point {
     constructor(x, y, userData) {
@@ -69,6 +73,7 @@ class QuadTree {
         this.divided = false;
     }
 
+    // Split the current node into four sub-quadrants
     subdivide() {
         let x = this.boundary.x;
         let y = this.boundary.y;
@@ -87,6 +92,7 @@ class QuadTree {
         this.divided = true;
     }
 
+    // Insert a point into the quadtree
     insert(point) {
         if (!this.boundary.contains(point)) {
             return false;
@@ -107,6 +113,7 @@ class QuadTree {
                 this.southwest.insert(point));
     }
 
+    // Query all points within a given range
     query(range, found = []) {
         if (!range.intersects(this.boundary)) {
             return found;
@@ -128,6 +135,7 @@ class QuadTree {
         return found;
     }
 
+    // Clear all points and subdivisions
     clear() {
         this.points = [];
         this.divided = false;
@@ -138,7 +146,7 @@ class QuadTree {
     }
 }
 
-// 空间分区管理器
+// QuadTree manager for handling particles and neighbor queries
 class QuadTreeManager {
     constructor(width, height, capacity = 4) {
         this.width = width;
@@ -147,51 +155,42 @@ class QuadTreeManager {
         this.quadtree = new QuadTree(this.boundary, capacity);
     }
 
-    // 插入粒子
+    // Insert a particle into the quadtree
     insert(particle) {
         let point = new Point(particle.pos.x, particle.pos.y, particle);
         this.quadtree.insert(point);
     }
 
-    // 查询指定范围内的粒子，支持环绕边界
+    // Query particles within a radius, supporting wrap-around boundaries
     query(x, y, radius) {
         let neighbors = [];
-        
         if (settings.boundaryMode === 'wrap') {
-            // 在环绕模式下，需要检查边界周围的区域
+            // In wrap mode, check 9 regions around the query point
             let queries = [];
-            // 中心区域
             queries.push({x: x, y: y});
-            
-            // 边界周围的8个区域
-            if (x < radius) queries.push({x: x + this.width, y: y}); // 右
-            if (x > this.width - radius) queries.push({x: x - this.width, y: y}); // 左
-            if (y < radius) queries.push({x: x, y: y + this.height}); // 下
-            if (y > this.height - radius) queries.push({x: x, y: y - this.height}); // 上
-            
-            // 对角
+            if (x < radius) queries.push({x: x + this.width, y: y});
+            if (x > this.width - radius) queries.push({x: x - this.width, y: y});
+            if (y < radius) queries.push({x: x, y: y + this.height});
+            if (y > this.height - radius) queries.push({x: x, y: y - this.height});
             if (x < radius && y < radius) queries.push({x: x + this.width, y: y + this.height});
             if (x < radius && y > this.height - radius) queries.push({x: x + this.width, y: y - this.height});
             if (x > this.width - radius && y < radius) queries.push({x: x - this.width, y: y + this.height});
             if (x > this.width - radius && y > this.height - radius) queries.push({x: x - this.width, y: y - this.height});
-            
-            // 对每个查询点进行搜索
             for (let q of queries) {
                 let range = new Circle(q.x, q.y, radius);
                 let found = this.quadtree.query(range);
                 neighbors.push(...found);
             }
         } else {
-            // 非环绕模式，直接查询
+            // Non-wrap mode, direct query
             let range = new Circle(x, y, radius);
             neighbors = this.quadtree.query(range);
         }
-        
-        // 返回实际的粒子对象
+        // Return particle objects
         return neighbors.map(p => p.userData);
     }
 
-    // 更新所有粒子位置
+    // Update all particle positions in the quadtree
     update(particles) {
         this.quadtree.clear();
         for (let particle of particles) {
@@ -199,14 +198,14 @@ class QuadTreeManager {
         }
     }
 
-    // 重建四叉树
+    // Rebuild the quadtree
     rebuild() {
         this.boundary = new Rectangle(this.width/2, this.height/2, this.width/2, this.height/2);
         this.quadtree = new QuadTree(this.boundary, 4);
     }
 }
 
-// 导出类
+// Export classes for Node.js
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         QuadTreeManager,
